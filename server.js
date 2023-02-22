@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
 
-const DB_HOST = 'mongodb+srv://Iryna:NWqTlyBjil7vWQGb@cluster0.ajpmzhv.mongodb.net/db-contacts?retryWrites=true&w=majority';
+const {DB_HOST} = process.env;
 mongoose.set('strictQuery', true);
 mongoose.connect(DB_HOST)
 .then(() => app.listen(PORT))
