@@ -6,6 +6,10 @@ const bcrypt = require("bcrypt");
 
 const userSchema = Schema(
     {
+      username: {
+        type: String,
+        required: [true, 'Set name for user'],
+      },
         password: {
           type: String,
           required: [true, 'Password is required'],
@@ -20,6 +24,10 @@ const userSchema = Schema(
           enum: ["starter", "pro", "business"],
           default: "starter"
         },
+        token: {
+          type: String,
+          default: null
+      }
 
 }, { versionKey: false, timestamps: true });
 
