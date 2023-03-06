@@ -2,8 +2,10 @@ const { Contact } = require("../../models/contact");
 const createError = require("http-errors");
 
 const updateFavorite = async (req, res) => {
-  const { id } = req.params;
-  const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+  const { _id } = req.user;
+  const result = await Contact.findOneAndUpdate({_id: contactId, owner: _id,}, { favorite }, { new: true });
   if (!result) {
     throw createError(404, "Not found");
   }

@@ -3,7 +3,8 @@ const createError = require("http-errors");
 
 const updateById = async (req, res) => {
   const { contactId } = req.params;
-  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+  const { _id } = req.user;
+  const result = await Contact.findOneAndUpdate({ _id: contactId, owner: _id }, req.body, {
     new: true,
   });
 

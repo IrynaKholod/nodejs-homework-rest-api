@@ -1,67 +1,69 @@
-const {Schema, model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 const Joi = require("joi");
 const handleMongooseError = require("../helpers/handleMongooseError");
 
 const contactSchema = new Schema(
-    {
-      name: {
-        type: String,
-        unique: [true, 'The name must be unique'],
-        required: [true, 'Set name for contact'],
-      },
-      email: { type: String, required: [true, 'Set email for contact'] },
-      phone: {
-        type: String,
-        required: [true, 'Set phone for contact'],
-      },
-      favorite: {
-        type: Boolean,
-        default: false,
-      },
+  {
+    name: {
+      type: String,
+      unique: [true, "The name must be unique"],
+      required: [true, "Set name for contact"],
     },
-    { versionKey: false, timestamps: true }
-  );
+    email: { type: String, required: [true, "Set email for contact"] },
+    phone: {
+      type: String,
+      required: [true, "Set phone for contact"],
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+  },
 
+  { versionKey: false, timestamps: true }
+);
 
-  const addSchema = Joi.object({
-    name: Joi.string().min(3).required(),
-    email: Joi.string()
-      .email({
-        minDomainSegments: 2,
-        tlds: { allow: ["com", "net", "org"] },
-      })
-      .required(),
-    phone: Joi.string().min(6).required(),
-    favorite: Joi.boolean(),
-    });
-
-    
-const updateSchema = Joi.object({
-    name: Joi.string().min(3),
-    email: Joi.string().email({
+const addSchema = Joi.object({
+  name: Joi.string().min(3).required(),
+  email: Joi.string()
+    .email({
       minDomainSegments: 2,
       tlds: { allow: ["com", "net", "org"] },
-    }),
-    phone: Joi.string().min(6),
-    favorite: Joi.boolean(),
-  });
+    })
+    .required(),
+  phone: Joi.string().min(6).required(),
+  favorite: Joi.boolean(),
+});
 
-  const updateFavoriteSchema = Joi.object({
-    favorite: Joi.boolean().required(),
-})
+const updateSchema = Joi.object({
+  name: Joi.string().min(3),
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ["com", "net", "org"] },
+  }),
+  phone: Joi.string().min(6),
+  favorite: Joi.boolean(),
+});
 
- 
-    const schemas = {
-        addSchema,
-        updateSchema,
-        updateFavoriteSchema
-    }
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
 
-    contactSchema.post("save", handleMongooseError);
+const schemas = {
+  addSchema,
+  updateSchema,
+  updateFavoriteSchema,
+};
 
+contactSchema.post("save", handleMongooseError);
 
 const Contact = model("contact", contactSchema);
-module.exports = { 
-    Contact,
-    schemas,
+module.exports = {
+  Contact,
+  schemas,
 };
