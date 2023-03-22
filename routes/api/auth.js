@@ -12,22 +12,29 @@ const path = require("path");
 const tempDir = path.join(__dirname, "../", "temp");
 
 const multerConfig = multer.diskStorage({
-    destination: tempDir,
-    filename: (req, file, cb) =>{
-        cb(null, file.originalname);
-    }
+  destination: tempDir,
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
 });
 
 const upload = multer({
-    storage: multerConfig
-})
-
+  storage: multerConfig,
+});
 
 router.post(
   "/signup",
   validateBody(schemas.registerSchema),
   ctrlWrapper(ctrl.signup)
 );
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verifyEmail));
+
+router.post(
+  "/verify",
+  validateBody(schemas.verifyEmailSchema),
+  ctrlWrapper(ctrl.resendVerifyEmail)
+);
+
 router.post(
   "/login",
   validateBody(schemas.loginSchema),
@@ -35,6 +42,11 @@ router.post(
 );
 router.post("/logout", auth, ctrlWrapper(ctrl.logout));
 
-router.patch("/avatars", auth, upload.single("avatar"), ctrlWrapper(ctrl.updateAvatar))
+router.patch(
+  "/avatars",
+  auth,
+  upload.single("avatar"),
+  ctrlWrapper(ctrl.updateAvatar)
+);
 
 module.exports = router;
